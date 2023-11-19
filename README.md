@@ -15,6 +15,6 @@ Twitterの埋め込みを復活させるBOT
 ![image](https://github.com/KiRura/TwitterEmbedGenerater/assets/57588049/c04a929e-7320-405b-9b39-8f9ff1d3dc72)
 
 
-[導入](https://canary.discord.com/api/oauth2/authorize?client_id=1165573087958401084&permissions=274877975552&scope=bot%20applications.commands)
+[導入](https://discord.com/api/oauth2/authorize?client_id=1165573087958401084&permissions=274877975552&scope=bot%20applications.commands)
 
 [一応サポート鯖](https://discord.gg/uuuj9H8ETa)
