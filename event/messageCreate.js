@@ -11,6 +11,7 @@ export default {
     if ((message.content.match('https://twitter.com/') || message.content.match('https://x.com/')) && message.content.match('status')) {
       const replaced = message.content.match(/https?:\/\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+/g)
       const embed = []
+      let description = ''
 
       for (let url of replaced) {
         if (url.match('https://twitter.com/')) {
@@ -19,6 +20,12 @@ export default {
           url = url.replace('x.com', 'api.vxtwitter.com')
         }
         const result = await (await fetch(url)).json()
+        for (const url of result.mediaURLs) {
+          if (url.match('video')) {
+            description = `${description === '' ? '' : '\n'}[動画URL](${url})`
+            result.mediaURLs.shift()
+          }
+        }
         embed.push(new EmbedBuilder()
           .setAuthor({ name: `${result.user_name} (@${result.user_screen_name})`, iconURL: result.user_profile_image_url })
           .setDescription(result.text)
@@ -40,23 +47,19 @@ export default {
           .setURL(result.tweetURL)
           .setColor(1941746)
         )
-        if (result.mediaURLs.length === 2) {
+        result.mediaURLs.shift()
+        for (const url of result.mediaURLs) {
           embed.push(new EmbedBuilder()
-            .setImage(result.mediaURLs[1])
             .setURL(result.tweetURL)
+            .setImage(url)
           )
-        } else if (result.mediaURLs.length > 2) {
-          const shifted = result.mediaURLs.shift()
-          for (const url of shifted) {
-            embed.push(new EmbedBuilder()
-              .setURL(result.tweetURL)
-              .setImage(url)
-            )
-          }
         }
       }
 
-      message.reply({ embeds: embed }).catch(_error => {})
+      message.reply({ embeds: embed, allowedMentions: { repliedUser: false } }).catch(_error => {})
+      if (description !== '') {
+        message.channel.send(description)
+      }
     }
   }
 }
