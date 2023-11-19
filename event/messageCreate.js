@@ -19,7 +19,12 @@ export default {
         } else if (url.match('https://x.com/')) {
           url = url.replace('x.com', 'api.vxtwitter.com')
         }
-        const result = await (await fetch(url)).json()
+        let result
+        try {
+          result = await (await fetch(url)).json()
+        } catch (error) {
+          return
+        }
         for (const url of result.mediaURLs) {
           if (url.match('video')) {
             description = `${description === '' ? '' : '\n'}[動画URL](${url})`
