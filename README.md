@@ -1,4 +1,4 @@
-# TwitterEmbedGenerater
+# TwitterEmbedGenerator
 Twitterの埋め込みを復活させるBOT
 - twitter.comもしくはx.comとstatusが含まれていた時に反応
 - 複数枚の画像に対応
