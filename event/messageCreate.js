@@ -34,21 +34,9 @@ export default {
         embed.push(new EmbedBuilder()
           .setAuthor({ name: `${result.user_name} (@${result.user_screen_name})`, iconURL: result.user_profile_image_url })
           .setDescription(result.text)
-          .setFields([
-            {
-              name: ':repeat:',
-              value: String(result.retweets),
-              inline: true
-            },
-            {
-              name: ':heart:',
-              value: String(result.likes),
-              inline: true
-            }
-          ])
           .setImage(result.mediaURLs.length !== 0 ? result.mediaURLs[0] : null)
           .setTimestamp(result.date_epoch * 1000)
-          .setFooter({ text: 'Twitter' })
+          .setFooter({ text: `${result.likes} ${result.likes === 1 ? 'like' : 'likes'} | ${result.retweets} ${result.retweets === 1 ? 'retweet' : 'retweets'}` })
           .setURL(result.tweetURL)
           .setColor(1941746)
         )
