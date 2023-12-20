@@ -15,9 +15,9 @@ export default {
 
       for (let url of replaced) {
         if (url.match('https://twitter.com/')) {
-          url = url.replace('twitter.com', 'api.vxtwitter.com')
+          url = url.replace('twitter.com', 'api.fxtwitter.com')
         } else if (url.match('https://x.com/')) {
-          url = url.replace('x.com', 'api.vxtwitter.com')
+          url = url.replace('x.com', 'api.fxtwitter.com')
         }
         let result
         try {
@@ -25,27 +25,58 @@ export default {
         } catch (error) {
           return
         }
-        for (const url of result.mediaURLs) {
-          if (url.match('video')) {
-            description = `${description === '' ? '' : '\n'}[動画URL](${url})`
-            result.mediaURLs.shift()
+        if (result.tweet.media?.videos) {
+          for (const media of result.tweet.media.videos) {
+            description = `${description === '' ? '' : '\n'}[動画URL](${media.url})`
           }
         }
+
         embed.push(new EmbedBuilder()
-          .setAuthor({ name: `${result.user_name} (@${result.user_screen_name})`, iconURL: result.user_profile_image_url })
-          .setDescription(result.text)
-          .setImage(result.mediaURLs.length !== 0 ? result.mediaURLs[0] : null)
-          .setTimestamp(result.date_epoch * 1000)
-          .setFooter({ text: `${result.likes} ${result.likes === 1 ? 'like' : 'likes'} | ${result.retweets} ${result.retweets === 1 ? 'retweet' : 'retweets'}` })
-          .setURL(result.tweetURL)
+          .setAuthor({ name: `${result.tweet.author.name} (@${result.tweet.author.screen_name})`, iconURL: result.tweet.author.avatar_url })
+          .setDescription(`${result.tweet.text}`)
+          .setImage(result.tweet.media?.photos ? result.tweet.media.photos[0].url + '?name=orig' : null)
+          .setTimestamp(new Date(result.tweet.created_at))
+          .setFooter({ text: `❤️${result.tweet.likes} ♻️${result.tweet.retweets} 📈${result.tweet.views} | ${result.tweet.source}` })
+          .setURL(result.tweet.url)
           .setColor(1941746)
         )
-        result.mediaURLs.shift()
-        for (const url of result.mediaURLs) {
+        if (result.tweet.media?.photos) {
+          result.tweet.media.photos.shift()
+          for (const media of result.tweet.media.photos) {
+            embed.push(new EmbedBuilder()
+              .setURL(result.tweet.url)
+              .setImage(media.url + '?name=orig')
+            )
+          }
+        }
+
+        if (result.tweet.quote) {
           embed.push(new EmbedBuilder()
-            .setURL(result.tweetURL)
-            .setImage(url)
+            .setAuthor({ name: `${result.tweet.quote.author.name} (@${result.tweet.quote.author.screen_name})`, iconURL: result.tweet.quote.author.avatar_url })
+            .setTitle('引用元')
+            .setDescription(`${result.tweet.quote.text}`)
+            .setImage(result.tweet.quote.media?.photos ? result.tweet.quote.media.photos[0].url + '?name=orig' : null)
+            .setTimestamp(new Date(result.tweet.quote.created_at))
+            .setFooter({ text: `❤️${result.tweet.quote.likes} ♻️${result.tweet.quote.retweets} 📈${result.tweet.quote.views} | ${result.tweet.quote.source}` })
+            .setURL(result.tweet.quote.url)
+            .setColor(1941746)
           )
+
+          if (result.tweet.quote.media?.photos) {
+            result.tweet.quote.media.photos.shift()
+            for (const media of result.tweet.quote.media.photos) {
+              embed.push(new EmbedBuilder()
+                .setURL(result.tweet.quote.url)
+                .setImage(media.url + '?name=orig')
+              )
+            }
+          }
+
+          if (result.tweet.quote.media?.videos) {
+            for (const media of result.tweet.quote.media.videos) {
+              description = `${description === '' ? '' : '\n'}[引用元動画URL](${media.url})`
+            }
+          }
         }
       }
 
