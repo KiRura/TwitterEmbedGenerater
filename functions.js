@@ -149,5 +149,24 @@ export default {
     } else {
       return `00:${seconds}`
     }
+  },
+  shorterNumbers (number) {
+    return new Intl.NumberFormat('ja-JP', {
+      notation: 'compact'
+      // compactDisplay: 'long'
+    }).format(number)
+  },
+  percentageToBar (number) {
+    if (number < 10) return ''
+    if (number < 20) return '█'
+    if (number < 30) return '██'
+    if (number < 40) return '███'
+    if (number < 50) return '████'
+    if (number < 60) return '█████'
+    if (number < 70) return '██████'
+    if (number < 80) return '███████'
+    if (number < 90) return '████████'
+    if (number < 100) return '█████████'
+    return '██████████'
   }
 }
