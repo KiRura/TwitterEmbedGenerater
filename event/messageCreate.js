@@ -11,16 +11,17 @@ export default {
    * @returns
    */
   async execute (message) {
-    if ((message.content.match('https://twitter.com/') || message.content.match('https://x.com/')) && message.content.match('status')) {
-      const replaced = message.content.match(/https?:\/\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+/g)
+    if (message.content.match('t!ttps://twitter.com/') || message.content.match('t!ttps://x.com/')) {
+      message.content = message.content.replace('x.com/', 'twitter.com/')
+      const replaced = message.content.match(/t!ttps:\/\/twitter.com?\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+/g)
       let description = ''
       const embeds = [] // 最終的に送信する埋め込み
       const images = [] // 画像の複数枚表示用
 
       const resultEmbeds = await Promise.all(replaced.map(async url => { // 最終的に送信する画像以外の埋め込み
-        url = url.match('https://twitter.com/') ? url.replace('twitter.com', 'api.fxtwitter.com') : url = url.replace('x.com', 'api.fxtwitter.com')
-        const result = await (await fetch(url)).json()
-        if (result.code === 404) return
+        url = url.match('twitter.com/') ? url.replace('twitter.com', 'api.fxtwitter.com') : url = url.replace('x.com', 'api.fxtwitter.com')
+        const result = await (await fetch('h' + url.slice(2))).json()
+        if (result.code !== 200) return
         const tweets = []
         if (result.user) tweets.push(result.user)
         if (result.tweet) tweets.push(result.tweet)
@@ -94,9 +95,7 @@ export default {
       if (!embeds) return
 
       message.reply({ embeds, allowedMentions: { repliedUser: false } }).catch(_error => {})
-      if (description !== '') {
-        message.channel.send(description)
-      }
+      if (description !== '') message.channel.send(description)
     }
   }
 }
