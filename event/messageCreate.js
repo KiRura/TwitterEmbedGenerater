@@ -12,15 +12,15 @@ export default {
    */
   async execute (message) {
     if (message.content.match('t!ttps://twitter.com/') || message.content.match('t!ttps://x.com/')) {
-      message.content = message.content.replace('x.com/', 'twitter.com/')
-      const replaced = message.content.match(/t!ttps:\/\/twitter.com?\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+/g)
+      message.content = message.content.replaceAll('t!ttps://x.com/', 't!ttps://twitter.com/').replaceAll('t!ttps://twitter.com/', 'https://api.fxtwitter.com/')
+      let replaced = message.content.match(/https:\/\/api.fxtwitter.com?\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+/g)
+      replaced = Array.from(new Set(replaced))
       let description = ''
       const embeds = [] // 最終的に送信する埋め込み
       const images = [] // 画像の複数枚表示用
 
       const resultEmbeds = await Promise.all(replaced.map(async url => { // 最終的に送信する画像以外の埋め込み
-        url = url.match('twitter.com/') ? url.replace('twitter.com', 'api.fxtwitter.com') : url = url.replace('x.com', 'api.fxtwitter.com')
-        const result = await (await fetch('h' + url.slice(2))).json()
+        const result = await (await fetch(url)).json()
         if (result.code !== 200) return
         const tweets = []
         if (result.user) tweets.push(result.user)
