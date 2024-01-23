@@ -74,7 +74,7 @@ export default {
           }
 
           return embed // 埋め込み
-            .setTitle(t.quote === 'true' ? '引用元' : null)
+            .setTitle(t.quote === 'true' ? '引用元' : 'ツイート')
             .setAuthor({ name: `${t.author.name} (@${t.author.screen_name})`, iconURL: t.author.avatar_url, url: t.author.url })
             .setDescription(`${t.text}${t.poll ? `\n\n${poll.join('\n')}\n\n` + `合計: ${t.poll.total_votes}` : ''}`)
             .setTimestamp(new Date(t.created_at))
