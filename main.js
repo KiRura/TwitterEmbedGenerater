@@ -55,6 +55,7 @@ client.on(Events.MessageCreate, async message => {
   } catch (error) {
     logger.error('MessageCreate Error')
     console.error(error)
+    await (await message.client.users.fetch('606093171151208448')).send(`誰かがエラーを吐いた\n${error}`)
   }
 })
 
@@ -86,6 +87,7 @@ client.on(Events.InteractionCreate, async interaction => {
     logger.error(`InteractionCreate (${interaction.command.name}) Error`)
     console.error(error)
     interaction.user.send(`エラーが発生しました。\n${error}`).catch(_error => {})
+    await (await interaction.client.users.fetch('606093171151208448')).send(`誰かがエラーを吐いた\n${error}`)
   }
 })
 
