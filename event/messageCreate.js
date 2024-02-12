@@ -45,7 +45,7 @@ export default {
 
           if (t.media?.videos) { // 動画はURLだけ埋め込みとは別で送信する
             for (const media of t.media.videos) {
-              description = `${description === '' ? '' : '\n'}[${t.quote === 'true' ? '引用元動画URL' : '動画URL'}](${media.url})`
+              description = `${description === '' ? '' : `${description} `}[${t.quote === 'true' ? '引用元動画URL' : '動画URL'}](${media.url})`
             }
           }
 
