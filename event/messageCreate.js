@@ -20,6 +20,7 @@ export default {
       const images = [] // 画像の複数枚表示用
 
       const resultEmbeds = await Promise.all(replaced.map(async url => { // 最終的に送信する画像以外の埋め込み
+        if (message.content.match(`\\|\\|${url}\\|\\|`)) return
         const result = await (await fetch(url)).json()
         if (result.code !== 200) return
         const tweets = []
@@ -84,15 +85,18 @@ export default {
         })
       }))
 
+      if (!resultEmbeds?.length) return
       for (const object of resultEmbeds) {
+        if (!object?.length) return
         for (const object2 of object) {
+          if (!object2?.length) return
           embeds.push(object2)
         }
       }
       for (const object of images) {
         embeds.push(object)
       }
-      if (!embeds) return
+      if (!embeds?.length) return
 
       message.reply({ embeds, allowedMentions: { repliedUser: false } }).catch(_error => {})
       if (description !== '') message.channel.send(description)
