@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
-import { Logger } from 'tslog'
-import { ActivityType, Client, EmbedBuilder, Events } from 'discord.js'
-import functions from '../functions.js'
-import data from '../data.js'
-const logger = new Logger({ hideLogPositionForProduction: true })
+import { Logger } from "tslog";
+import { ActivityType, Client, EmbedBuilder, Events } from "discord.js";
+import functions from "../functions.js";
+import data from "../data.js";
+const logger = new Logger({ hideLogPositionForProduction: true });
 
 export default {
   name: Events.ClientReady,
@@ -11,13 +11,16 @@ export default {
    * @param {Client<true>} client
    * @param {[]} registCommands
    */
-  async execute (client, registCommands) {
+  async execute(client, registCommands) {
     setInterval(async () => {
-      client.user.setActivity({ name: `${(await client.guilds.fetch()).size} servers・${client.users.cache.size} users・${await functions.googlePing()} ms`, type: ActivityType.Custom })
-    }, 30000)
+      client.user.setActivity({
+        name: `${(await client.guilds.fetch()).size} servers・${client.users.cache.size} users・${await functions.googlePing()} ms`,
+        type: ActivityType.Custom
+      });
+    }, 30000);
 
-    logger.info('setting commands...')
-    await client.application.commands.set(registCommands)
+    logger.info("setting commands...");
+    await client.application.commands.set(registCommands);
 
     // await (await (await client.guilds.fetch('1099309562781245440')).channels.fetch('1146562994688503999')).send({
     //   embeds: [
@@ -28,6 +31,6 @@ export default {
     //   ]
     // })
 
-    logger.info(`${client.user.displayName} ALL READY`)
+    logger.info(`${client.user.displayName} ALL READY`);
   }
-}
+};
