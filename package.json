@@ -8,7 +8,7 @@
     "dotenv": "^16.4.5",
     "ping": "^0.4.4",
     "tslog": "^4.9.2",
-    "undici": "^6.10.2"
+    "undici": "^6.13.0"
   },
   "description": "",
   "license": "MIT",
