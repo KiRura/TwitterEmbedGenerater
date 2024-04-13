@@ -47,11 +47,19 @@ export default {
               return new EmbedBuilder()
                 .setTitle(t.name)
                 .setDescription(
-                  `${t.description}\n${t.website ? `\n🔗 ${t.website.url}` : ""}${t.location ? `\n📍 ${t.location}` : ""}`
+                  `${t.description}\n${
+                    t.website ? `\n🔗 ${t.website.url}` : ""
+                  }${t.location ? `\n📍 ${t.location}` : ""}`
                 )
                 .setURL(t.url)
                 .setFooter({
-                  text: `👤${functions.shorterNumbers(t.following)} 👥${functions.shorterNumbers(t.followers)} 💭${functions.shorterNumbers(t.tweets)} ♥️${functions.shorterNumbers(t.likes)}`
+                  text: `👤${functions.shorterNumbers(
+                    t.following
+                  )} 👥${functions.shorterNumbers(
+                    t.followers
+                  )} 💭${functions.shorterNumbers(
+                    t.tweets
+                  )} ♥️${functions.shorterNumbers(t.likes)}`
                 })
                 .setTimestamp(new Date(t.joined))
                 .setAuthor({
@@ -65,7 +73,9 @@ export default {
             if (t.media?.videos) {
               // 動画はURLだけ埋め込みとは別で送信する
               for (const media of t.media.videos) {
-                description = `${description === "" ? "" : `${description} `}[${t.quote === "true" ? "引用元動画URL" : "動画URL"}](${media.url})`;
+                description = `${description === "" ? "" : `${description} `}[${
+                  t.quote === "true" ? "引用元動画URL" : "動画URL"
+                }](${media.url})`;
               }
             }
 
@@ -91,23 +101,36 @@ export default {
             let poll;
             if (t.poll) {
               poll = t.poll.choices.map(choice => {
-                return `${functions.percentageToBar(choice.percentage)}\n**${choice.label}:** ${choice.percentage}%`;
+                return `${functions.percentageToBar(choice.percentage)}\n**${
+                  choice.label
+                }:** ${choice.percentage}%`;
               });
             }
 
             return embed // 埋め込み
-              .setTitle(t.quote === "true" ? "引用元" : "ツイート")
+              .setTitle(t.quote === "true" ? "引用元" : null)
               .setAuthor({
                 name: `${t.author.name} (@${t.author.screen_name})`,
                 iconURL: t.author.avatar_url,
                 url: t.author.url
               })
               .setDescription(
-                `${t.text}${t.poll ? `\n\n${poll.join("\n")}\n\n` + `合計: ${t.poll.total_votes}` : ""}`
+                `${t.text}${
+                  t.poll
+                    ? `\n\n${poll.join("\n")}\n\n` +
+                      `合計: ${t.poll.total_votes}`
+                    : ""
+                }\n\n<:like:1228491553719189595> ${functions.shorterNumbers(
+                  t.likes
+                )} ｜ <:retweet:1228492442563510303> ${functions.shorterNumbers(
+                  t.retweets
+                )} ｜ <:impression:1228493304442912798> ${functions.shorterNumbers(
+                  t.views
+                )}`
               )
               .setTimestamp(new Date(t.created_at))
               .setFooter({
-                text: `♥️${functions.shorterNumbers(t.likes)} ♻️${functions.shorterNumbers(t.retweets)} 📈${functions.shorterNumbers(t.views)}${t.source ? `・${t.source}` : ""}`
+                text: t.source || null
               })
               .setURL(t.url)
               .setColor(data.twitterColor);
